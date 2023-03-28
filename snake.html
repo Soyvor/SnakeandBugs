@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Snake Game</title>
+	<style>
+		canvas {
+			border: 1px solid #000;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="canvas" width="400" height="400"></canvas>
+	<script>
+		const canvas = document.getElementById('canvas');
+		const ctx = canvas.getContext('2d');
+
+		const ROWS = 20;
+		const COLS = 20;
+		const CELL_SIZE = canvas.width / COLS;
+
+		class Snake {
+			constructor() {
+				this.body = [
+					{x: 5, y: 5},
+					{x: 5, y: 6},
+					{x: 5, y: 7}
+				];
+				this.direction = 'right';
+			}
+
+			draw() {
+				ctx.fillStyle = 'green';
+				this.body.forEach(part => {
+					ctx.fillRect(part.x * CELL_SIZE, part.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+				});
+			}
+
+			move() {
+				const head = {x: this.body[0].x, y: this.body[0].y};
+
+				if (this.direction === 'up') {
+					head.y--;
+				} else if (this.direction === 'down') {
+					head.y++;
+				} else if (this.direction === 'left') {
+					head.x--;
+				} else if (this.direction === 'right') {
+					head.x++;
+				}
+
+				this.body.pop();
+				this.body.unshift(head);
+			}
+		}
+
+		const snake = new Snake();
+
+		function drawGrid() {
+			for (let i = 0; i < ROWS; i++) {
+				for (let j = 0; j < COLS; j++) {
+					ctx.strokeRect(j * CELL_SIZE, i * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+				}
+			}
+		}
+
+		function draw() {
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			drawGrid();
+			snake.move();
+			snake.draw();
+		}
+
+		document.addEventListener('keydown', event => {
+			if (event.key === 'ArrowUp') {
+				snake.direction = 'up';
+			} else if (event.key === 'ArrowDown') {
+				snake.direction = 'down';
+			} else if (event.key === 'ArrowLeft') {
+				snake.direction = 'left';
+			} else if (event.key === 'ArrowRight') {
+				snake.direction = 'right';
+			}
+		});
+
+		setInterval(draw, 100);
+	</script>
+</body>
+</html>
